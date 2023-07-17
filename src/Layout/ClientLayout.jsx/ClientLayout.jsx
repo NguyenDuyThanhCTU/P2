@@ -1,19 +1,17 @@
 import React from "react";
-import Header from "./Section/Header";
-
-import Hotline from "./Section/Hotline";
-import Footer from "./Section/Footer";
-import Copyright from "./Section/Copyright";
+import { Helmet } from "react-helmet";
+import { useData } from "../../Context/DataProviders";
 
 const ClientLayout = ({ children }) => {
+  const { TradeMarkData } = useData();
+
   return (
     <>
-      <Header />
+      <Helmet>
+        <title>{TradeMarkData.websiteName}</title>
+        <link rel="icon" href={TradeMarkData.websiteIco} />
+      </Helmet>
       {children}
-      {/* <OnTop /> */}
-      <Hotline />
-      <Footer />
-      <Copyright />
     </>
   );
 };

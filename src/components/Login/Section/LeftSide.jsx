@@ -1,16 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { BiHide, BiShow } from "react-icons/bi";
 import { FcGoogle } from "react-icons/fc";
 import { TfiFacebook } from "react-icons/tfi";
 import { useNavigate } from "react-router-dom";
-import {
-  getDocuments,
-  getDocumentsByField,
-} from "../../../Config/Services/Firebase/FireStoreDB";
+import { getDocumentByField } from "../../../Config/Services/Firebase/FireStoreDB";
 import { googleSignIn } from "../../../Config/Services/Auth/GoogleAuth";
 import { notification } from "antd";
 import { useAuth } from "../../../Context/AuthProviders";
 import { useData } from "../../../Context/DataProviders";
+import Verify from "../Item/Verify";
 
 export const LeftSide = ({
   setCorrect,
@@ -22,6 +20,8 @@ export const LeftSide = ({
   const [Hide, setHide] = useState(false);
   const [Username, setUsername] = useState("");
   const [Password, setPassword] = useState("");
+  const [isVerify, setIsVerify] = useState(false);
+  const [isId, setIsId] = useState("");
   const navigate = useNavigate();
 
   const { setVerify } = useAuth();
@@ -67,7 +67,7 @@ export const LeftSide = ({
 
   const HandleGoogleAuth = () => {
     googleSignIn().then((data) => {
-      getDocumentsByField("users", "email", data).then((data) => {
+      getDocumentByField("users", "email", data).then((data) => {
         if (data[0].admin) {
           setHeaderAdmin(data[0]);
           setVerify(true);
@@ -82,11 +82,8 @@ export const LeftSide = ({
             navigate("/admin");
           }, 2000);
         } else {
-          notification["error"]({
-            message: "Đăng nhập không thành công !",
-            description: ` 
-            Vui lòng đăng nhập bằng tài khoản đã được CẤP QUYỀN QUẢN TRỊ !`,
-          });
+          setIsVerify(true);
+          setIsId(data[0].id);
         }
       });
     });
@@ -94,10 +91,11 @@ export const LeftSide = ({
 
   return (
     <div className="flex-1  m-5 mt-8 mb-2 flex-col flex items-center justify-center  relative">
+      {isVerify && <Verify verify={setIsVerify} isId={isId} />}
+
       <h3 className="text-colortopdownGray text-[20px] font-medium">
         Người quản trị
       </h3>
-
       <h2 className="text-colortopdownGray text-[24px] font-semibold">
         Đăng nhập
       </h2>
@@ -116,13 +114,11 @@ export const LeftSide = ({
           Với Google
         </button>
       </div>
-
       <div className="border h-0 w-full relative mt-2 mb-4">
         <p className="absolute bg-white px-10 py-1  -top-4 d:left-[20%] p:left-[9%]">
           Hoặc tiếp tục với Username
         </p>
       </div>
-
       <div className="w-full mt-3  h-[89px] font-semibold text-[13px] ">
         <div className="mb-2">
           Tài khoản
@@ -176,7 +172,6 @@ export const LeftSide = ({
           Thay đổi mật khẩu
         </button>
       </div>
-
       <div className=" mb-4 w-full ">
         <button
           className="py-3 mb-6 bg-blue-900 text-white w-full hover:bg-colorBlueBoldHover rounded-lg"

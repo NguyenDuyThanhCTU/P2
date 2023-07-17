@@ -151,7 +151,30 @@ const Section = ({ name, type }) => {
                 </div>
               )}
             </div>
-            {/* <SubSection type={type} /> */}
+            <div className="shadow-2xl bg-[#353535] h-auto hover:shadow-gray-700 duration-300">
+              <div className="w-[480px] h-full">
+                {imageUrl ? (
+                  <>
+                    <img
+                      src={imageUrl}
+                      alt=""
+                      className="w-[467px] h-full object-cover"
+                    />
+                  </>
+                ) : (
+                  <div className="text-white  bg-w w-full">
+                    <Empty
+                      imageStyle={{ height: 60 }}
+                      description={
+                        <span className="text-white">
+                          Hình ảnh chưa được tải lên
+                        </span>
+                      }
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
 
           <ListSlide type={type} />
